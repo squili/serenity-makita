@@ -2013,10 +2013,8 @@ impl Guild {
         for &role in &member.roles {
             if let Some(role) = roles.get(&role) {
                 permissions |= role.permissions;
-            } else {
-                error!("{} on {} has non-existent role {:?}", member.user.id, guild_id, role);
-                return Err(Error::Model(ModelError::RoleNotFound));
             }
+            // While we shouldn't have non-existent roles, it's not enough to justify returning an error
         }
 
         // Administrators have all permissions in any channel.

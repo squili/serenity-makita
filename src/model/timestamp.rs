@@ -30,11 +30,11 @@
 //! ```
 
 use std::fmt;
-use std::ops::Deref;
+use std::ops::{Add, Deref};
 use std::str::FromStr;
 
 #[cfg(not(feature = "time"))]
-use chrono::{DateTime, TimeZone, Utc};
+use chrono::{DateTime, TimeZone, Utc, Duration};
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "time")]
 use time::format_description::well_known::Rfc3339;
@@ -258,5 +258,14 @@ impl<Tz: TimeZone> From<DateTime<Tz>> for Timestamp {
 impl From<OffsetDateTime> for Timestamp {
     fn from(dt: OffsetDateTime) -> Self {
         Self(dt)
+    }
+}
+
+impl Add<Duration> for Timestamp {
+    type Output = Timestamp;
+
+    fn add(mut self, rhs: Duration) -> Self::Output {
+        self.0 = self.0 + rhs;
+        self
     }
 }
